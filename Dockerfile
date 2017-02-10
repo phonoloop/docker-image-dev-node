@@ -11,6 +11,6 @@ RUN npm install --save-dev
 
 EXPOSE 8080
 
-VOLUME ["/var/www/app"]
+VOLUME ["/var/www/app/public"]
 
 CMD ["gulp", "watch"]
