@@ -1,12 +1,16 @@
-FROM node:7.5.0-alpine
+FROM node:7.5.0
 MAINTAINER phonoloop <phonoloop@spaceape.be>
 
-#RUN npm install gulp-cli -g \
-#    && npm install gulp -D
-
-#ADD package.json /opt/app/package.json
+ADD ./www/app/public /var/www/app/public
 WORKDIR /var/www/app
-RUN cd /var/www/app && npm install; exit 0
-#RUN npm install nodemon -g
+
+RUN npm install --save-dev
+#RUN npm install gulpjs/gulp-cli -g
+#RUN npm install gulpjs/gulp#4.0 --save-dev
+#RUN npm install -g bower
 
 EXPOSE 8080
+
+VOLUME ["/var/www/app/public"]
+
+CMD ["gulp", "watch"]
