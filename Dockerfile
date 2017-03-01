@@ -1,14 +1,31 @@
 FROM node:7.5.0
 MAINTAINER phonoloop <phonoloop@spaceape.be>
 
-#ADD ./www/app/public /var/www/app/public
+# Install general requirements
+RUN apt-get update -qq \
+    && apt-get install -y build-essential
+
+# Define volume
+VOLUME ./www/app
+# Define working directory
 WORKDIR /var/www/app
 
-RUN npm install --save-dev
-#RUN npm install gulpjs/gulp-cli -g
-#RUN npm install gulpjs/gulp#4.0 --save-dev
-#RUN npm install -g bower
+# Install SASS
+RUN apt-get install -y ruby
+RUN gem install sass
 
-EXPOSE 8080
+# Install Gulp 4.0 (alpha) and Bower globally
+RUN npm install gulpjs/gulp-cli -g
+RUN npm install -g bower
 
-VOLUME ["/var/www/app/public"]
+# Include JSON files
+ADD ./www/app/package.json /var/www/app/package.json
+ADD ./www/app/bower.json /var/www/app/bower.json
+
+# Install dependencies from JSON files
+RUN echo '{ "allow_root": true }' > /root/.bowerrc \
+    && bower install \
+    && npm install --save-dev
+
+# Start default gulp
+CMD ["gulp"]
